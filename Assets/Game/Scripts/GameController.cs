@@ -8,6 +8,7 @@ namespace gotoandplay
         public static GameController Instance;
         [HideInInspector]
         public UnityEvent<int> evStartGame;
+        public UnityEvent evLevelComplete;
 
         private GameView gameView;
 
@@ -16,7 +17,7 @@ namespace gotoandplay
 
         public TowerController goalTower;               // our winning tower
 
-        private int currentGamePegCount = 0;
+        private int currentGameDiskCount = 0;
 
         private void Awake()
         {
@@ -35,13 +36,13 @@ namespace gotoandplay
             gameView = FindObjectOfType<GameView>();
         }
 
-        public void StartGame(int pegCount)
+        public void StartGame(int diskCount)
         {
-            currentGamePegCount = pegCount;
-            evStartGame.Invoke(pegCount);
+            currentGameDiskCount = diskCount;
+            evStartGame.Invoke(diskCount);
         }
 
-        // simulate 3 peg toh test
+        // simulate 3 disk toh test
         public void TOH(int n, int A, int B, int C)
         {
             if(n > 0)
@@ -56,38 +57,43 @@ namespace gotoandplay
         {
             if(focusedTower == null)
             {
-                // only allow to focus if the current tower has at least one peg
-                if(value.pegs.Count > 0)
+                // only allow to focus if the current tower has at least one disk
+                if(value.disks.Count > 0)
                 {
                     focusedTower = value;
+
+                    focusedTower.SetMaterialByState(true);
                 }
             }
             else if(focusedTower != null && targetTower == null)
             {
                 targetTower = value;
-                //Debug.Log(string.Format("Start {0} - Destination {1}", focusedTower.gameObject.name, targetTower.gameObject.name));
-                
+
                 // move top object if there is any
-                PegController toMovePeg = focusedTower.GetTopPeg();
-                PegController targetTopPeg = targetTower.GetTopPeg();
+                DiskController toMoveDisk = focusedTower.GetTopDisk();
+                DiskController targetTopDisk = targetTower.GetTopDisk();
 
-                if(toMovePeg)
+                if(toMoveDisk)
                 {
-                    // do check if target tower top peg is bigger than to move peg!
-                    int startPegIndex = toMovePeg.GetPegIndex();
-                    int targetTopPegIndex = targetTopPeg != null ? targetTopPeg.GetPegIndex() : -1;
+                    // do check if target tower top disk is bigger than the other to move disk!
+                    int startDiskIndex = toMoveDisk.GetDiskIndex();
+                    int targetTopDiskIndex = targetTopDisk != null ? targetTopDisk.GetDiskIndex() : -1;
 
-                    if(startPegIndex < targetTopPegIndex || targetTopPegIndex == -1)
+                    if(startDiskIndex < targetTopDiskIndex || targetTopDiskIndex == -1)
                     {
-                        // transfer top peg to target tower
-                        targetTower.AddPeg(toMovePeg);
-                        focusedTower.RemoveTopPeg();
+                        // transfer top disk to target tower
+                        targetTower.AddDisk(toMoveDisk);
+                        focusedTower.RemoveTopDisk();
 
                         CheckGameComplete();
 
-                        // TODO - you can add move count here, and other actions relating to moving the peg to another spot.
+                        // TODO - you can add move count here, and other actions relating to moving the disk to another spot.
                     }
                 }
+
+                // reset material state
+                focusedTower.SetMaterialByState(false);
+                targetTower.SetMaterialByState(false);
 
                 // clear selected targets
                 focusedTower = null;
@@ -113,10 +119,11 @@ namespace gotoandplay
 
             if(goalTower)
             {
-                //Debug.Log(string.Format("{0} == {1}", goalTower.pegs.Count, currentGamePegCount));
-                if (goalTower.pegs.Count == currentGamePegCount)
+                // check for level complete condition
+                if (goalTower.disks.Count == currentGameDiskCount)
                 {
                     Debug.Log("We win!");
+                    evLevelComplete.Invoke();
                 }
             }
         }

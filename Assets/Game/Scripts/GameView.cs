@@ -2,30 +2,77 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 namespace gotoandplay
 {
     public class GameView : MonoBehaviour
     {
-        public TMP_InputField pegCountInput;
+        public Slider diskCountSlider;
+        public TextMeshProUGUI diskCountSliderLabel;
+
+        public GameObject uiGameSetup;
+        public GameObject uiGameHud;
+        public GameObject uiLevelComplete;
 
         private void Start()
         {
-            
+            SubscribeEvents();
+            Init();
+        }
+
+        private void OnDestroy()
+        {
+            UnSubscribeEvents();
+        }
+
+        private void Init()
+        {
+            OnDiskCountValueChanged(diskCountSlider.value);
+        }
+
+        public void OnDiskCountValueChanged(float value)
+        {
+            diskCountSliderLabel.text = value + "";
+        }
+
+        void SubscribeEvents()
+        {
+            if (GameController.Instance)
+                GameController.Instance.evLevelComplete.AddListener(LevelCompleteHandler);
+        }
+
+        void UnSubscribeEvents()
+        {
+            if (GameController.Instance)
+                GameController.Instance.evLevelComplete.RemoveListener(LevelCompleteHandler);
+        }
+
+        private void LevelCompleteHandler()
+        {
+            uiGameSetup.SetActive(false);
+            uiGameHud.SetActive(false);
+            uiLevelComplete.SetActive(true);
         }
 
         #region - button actions
         public void OnPlayPressed()
         {
-            if(!string.IsNullOrEmpty(pegCountInput.text))
+            //if(!string.IsNullOrEmpty(diskCountInput.text))
+            if(diskCountSlider.value > 0)
             {
-                int pegCount = int.Parse(pegCountInput.text);
-                pegCount = Mathf.Clamp(pegCount, 2, pegCount);
-                pegCountInput.text = pegCount + ""; // update in case the value is not in clamped range
+                int diskCount = (int) diskCountSlider.value;
+                GameController.Instance.StartGame(diskCount);
 
-                GameController.Instance.StartGame(pegCount);
+                uiGameSetup.SetActive(false);
+                uiGameHud.SetActive(true);
             }
+        }
+
+        public void RestartLevel()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         #endregion
     }

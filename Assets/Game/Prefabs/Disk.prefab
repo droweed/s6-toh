@@ -11717,7 +11717,7 @@ GameObject:
   - component: {fileID: 7347344533932857453}
   - component: {fileID: 7347344533932857454}
   m_Layer: 0
-  m_Name: Peg
+  m_Name: Disk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11751,4 +11751,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bd13b3a65cd84cc7a75a12eb3d7eb74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pegModelRoot: {fileID: 7347344532951114272}
+  diskModelRoot: {fileID: 7347344532951114272}
+  diskIndex: -1
