@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,12 +6,17 @@ namespace gotoandplay
     public class GameController : MonoBehaviour
     {
         public static GameController Instance;
+        [HideInInspector]
         public UnityEvent<int> evStartGame;
 
         private GameView gameView;
 
         public TowerController focusedTower;
         public TowerController targetTower;
+
+        public TowerController goalTower;               // our winning tower
+
+        private int currentGamePegCount = 0;
 
         private void Awake()
         {
@@ -34,6 +37,7 @@ namespace gotoandplay
 
         public void StartGame(int pegCount)
         {
+            currentGamePegCount = pegCount;
             evStartGame.Invoke(pegCount);
         }
 
@@ -43,7 +47,7 @@ namespace gotoandplay
             if(n > 0)
             {
                 TOH(n - 1, A, C, B);
-                Debug.Log(string.Format("disc moved from {0} to {1}", A, C));
+                Debug.Log(string.Format("torus moved from {0} to {1}", A, C));
                 TOH(n - 1, B, A, C);
             }
         }
@@ -52,8 +56,12 @@ namespace gotoandplay
         {
             if(focusedTower == null)
             {
-                focusedTower = value;
-            } 
+                // only allow to focus if the current tower has at least one peg
+                if(value.pegs.Count > 0)
+                {
+                    focusedTower = value;
+                }
+            }
             else if(focusedTower != null && targetTower == null)
             {
                 targetTower = value;
@@ -74,12 +82,42 @@ namespace gotoandplay
                         // transfer top peg to target tower
                         targetTower.AddPeg(toMovePeg);
                         focusedTower.RemoveTopPeg();
+
+                        CheckGameComplete();
+
+                        // TODO - you can add move count here, and other actions relating to moving the peg to another spot.
                     }
                 }
 
                 // clear selected targets
                 focusedTower = null;
                 targetTower = null;
+            }
+        }
+
+        private void CheckGameComplete()
+        {
+            if(goalTower == null)
+            {
+                TowerController[] towerControllers = FindObjectsOfType<TowerController>();
+                foreach(var tower in towerControllers)
+                {
+                    if(tower.towerType == TowerType.GOAL)
+                    {
+                        // this is the goal tower
+                        goalTower = tower;
+                        break;
+                    }
+                }
+            }
+
+            if(goalTower)
+            {
+                //Debug.Log(string.Format("{0} == {1}", goalTower.pegs.Count, currentGamePegCount));
+                if (goalTower.pegs.Count == currentGamePegCount)
+                {
+                    Debug.Log("We win!");
+                }
             }
         }
     }

@@ -63,10 +63,6 @@ namespace gotoandplay
 
                     pegs.Add(pegControl);
                 }
-            } 
-            else
-            {
-                Debug.Log("Not starting tower.");
             }
         }
 
