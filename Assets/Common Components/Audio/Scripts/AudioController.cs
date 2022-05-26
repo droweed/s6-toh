@@ -12,7 +12,6 @@ namespace gotoandplay
         public AudioMixer masterMixer;
 
         public AudioSource bgmSource;
-        public AudioSource sfxSource;
         public AudioSource miscSource;
 
         public const string PREFS_MAIN_VOLUME_KEY = "_mix_volume_main_key_";
@@ -41,8 +40,6 @@ namespace gotoandplay
         {
             var mainVolume = GetMainVolume();
             var sfxVolume = GetSFXVolume();
-
-            Debug.Log("loaded values: " + mainVolume + " - " + sfxVolume);
 
             SetMainVolume(mainVolume);
             SetSFXVolume(sfxVolume);

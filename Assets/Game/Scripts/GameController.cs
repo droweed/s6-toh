@@ -25,6 +25,11 @@ namespace gotoandplay
 
         private GameState gameState = GameState.LOBBY;
 
+        [Header("SFX")]
+        public AudioClip selectSFX;
+        public AudioClip transferSFX;
+        public AudioClip levelCompleteFanfare;
+
         private void Awake()
         {
             if(Instance == null) { Instance = this; }
@@ -70,6 +75,9 @@ namespace gotoandplay
         /// <param name="value"></param>
         public void OnTowerPressed(TowerController value)
         {
+            if(AudioController.Instance)
+                AudioController.Instance.PlayOneShot(selectSFX);
+
             if(focusedTower == null)
             {
                 // only allow to focus if the current tower has at least one disk
@@ -96,6 +104,9 @@ namespace gotoandplay
 
                     if(startDiskIndex < targetTopDiskIndex || targetTopDiskIndex == -1)
                     {
+                        if (AudioController.Instance)
+                            AudioController.Instance.PlayOneShot(transferSFX);
+
                         // transfer top disk to target tower
                         targetTower.AddDisk(toMoveDisk);
                         focusedTower.RemoveTopDisk();
@@ -143,6 +154,9 @@ namespace gotoandplay
                 // check for level complete condition
                 if (goalTower.disks.Count == currentGameDiskCount)
                 {
+                    if (AudioController.Instance)
+                        AudioController.Instance.PlayOneShot(levelCompleteFanfare);
+
                     gameState = GameState.COMPLETE;
 
                     var countView = FindObjectOfType<MoveCountView>();

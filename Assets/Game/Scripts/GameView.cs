@@ -42,7 +42,7 @@ namespace gotoandplay
 
         public void SetLevelCompleteSummaryValues(int moveCount, float gameDuration)
         {
-            levelCompleteDurationLabel.text = gameDuration.ToString("0.00");
+            levelCompleteDurationLabel.text = gameDuration.ToString("0.00")  + "s";
             levelCompleteMoveCountLabel.text = moveCount + "";
         }
 
