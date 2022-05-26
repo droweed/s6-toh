@@ -8,6 +8,7 @@ namespace gotoandplay
         public static GameController Instance;
         [HideInInspector]
         public UnityEvent<int> evStartGame;
+        [HideInInspector]
         public UnityEvent evLevelComplete;
 
         private GameView gameView;

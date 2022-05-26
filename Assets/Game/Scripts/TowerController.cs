@@ -15,18 +15,29 @@ namespace gotoandplay
 
         public List<DiskController> disks = new List<DiskController>();
 
-        [Header("")]
+        [Header("Tower State Materials")]
         public Material defaultTowerMat;
         public Material selectedTowerMat;
+        public Material hoveredTowerMat;
+
+        private Material currentTowerMat;
 
         private float minScaleValue = 1.2f;
         private float maxScaleValue = 2.5f;
         private float baseDownScale = 0.2f; // the value the disk shrinks at as it increments
         private const float diskYOffset = 0.45f;
 
+        private bool isSelected;
+
         private void Start()
         {
+            Init();
+        }
+
+        void Init()
+        {
             SubscribeEvents();
+            currentTowerMat = defaultTowerMat;
         }
 
         private void OnDestroy()
@@ -85,6 +96,21 @@ namespace gotoandplay
             }
         }
 
+        private void OnMouseOver()
+        {
+            if (isSelected)
+                return;
+
+            if(towerRenderer)
+                towerRenderer.material = hoveredTowerMat;
+        }
+
+        private void OnMouseExit()
+        {
+            if(towerRenderer)
+                towerRenderer.material = currentTowerMat;
+        }
+
         private void OnMouseDown()
         {
             if(GameController.Instance)
@@ -95,7 +121,8 @@ namespace gotoandplay
 
         public void SetMaterialByState(bool selected)
         {
-            towerRenderer.material = selected ? selectedTowerMat : defaultTowerMat;
+            isSelected = selected;
+            towerRenderer.material = currentTowerMat = selected ? selectedTowerMat : defaultTowerMat;
         }
 
         public DiskController GetTopDisk()

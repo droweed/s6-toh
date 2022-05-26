@@ -65,7 +65,8 @@ namespace gotoandplay
                 int diskCount = (int) diskCountSlider.value;
                 GameController.Instance.StartGame(diskCount);
 
-                uiGameSetup.SetActive(false);
+                //uiGameSetup.SetActive(false);
+                uiGameSetup.GetComponent<Animator>().Play("Anim Out");
                 uiGameHud.SetActive(true);
             }
         }

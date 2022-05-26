@@ -193,6 +193,8 @@ MonoBehaviour:
   disks: []
   defaultTowerMat: {fileID: 2100000, guid: 95a739eb02c6b334c9d8778df9aae811, type: 2}
   selectedTowerMat: {fileID: 2100000, guid: 66e4b988f9822d64f8f0cc7ef0122b6b, type: 2}
+  hoveredTowerMat: {fileID: 2100000, guid: 409046edb72b587459f810a5bd35fd23, type: 2}
+  currentTowerMat: {fileID: 0}
 --- !u!1 &5145950731651667715
 GameObject:
   m_ObjectHideFlags: 0
