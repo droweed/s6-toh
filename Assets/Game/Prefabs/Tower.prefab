@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4744819288923889414}
   - component: {fileID: 4744819288923889418}
   - component: {fileID: 4744819288923889419}
+  - component: {fileID: 2442642836724910995}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
@@ -83,6 +84,26 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &2442642836724910995
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744819288923889415}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c8cd2b11f7af29648ab393caca70ad91, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4744819289439837250
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,7 +215,6 @@ MonoBehaviour:
   defaultTowerMat: {fileID: 2100000, guid: 95a739eb02c6b334c9d8778df9aae811, type: 2}
   selectedTowerMat: {fileID: 2100000, guid: 66e4b988f9822d64f8f0cc7ef0122b6b, type: 2}
   hoveredTowerMat: {fileID: 2100000, guid: 409046edb72b587459f810a5bd35fd23, type: 2}
-  currentTowerMat: {fileID: 0}
 --- !u!1 &5145950731651667715
 GameObject:
   m_ObjectHideFlags: 0

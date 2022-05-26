@@ -37,7 +37,7 @@ namespace gotoandplay
         void Init()
         {
             SubscribeEvents();
-            currentTowerMat = defaultTowerMat;
+            currentTowerMat = defaultTowerMat = towerRenderer.material;
         }
 
         private void OnDestroy()
@@ -96,29 +96,6 @@ namespace gotoandplay
             }
         }
 
-        private void OnMouseOver()
-        {
-            if (isSelected)
-                return;
-
-            if(towerRenderer)
-                towerRenderer.material = hoveredTowerMat;
-        }
-
-        private void OnMouseExit()
-        {
-            if(towerRenderer)
-                towerRenderer.material = currentTowerMat;
-        }
-
-        private void OnMouseDown()
-        {
-            if(GameController.Instance)
-            {
-                GameController.Instance.OnTowerPressed(this);
-            }
-        }
-
         public void SetMaterialByState(bool selected)
         {
             isSelected = selected;
@@ -156,6 +133,55 @@ namespace gotoandplay
 
             value.transform.localPosition = mPosition;
         }
+
+        /// <summary>
+        /// tiny check to disable the mouse overs and clicks of the tower based on the game state
+        /// </summary>
+        /// <returns></returns>
+        private bool IsInteractable()
+        {
+            if(GameController.Instance)
+            {
+                if (GameController.Instance.GetGameState() != GameState.IN_GAME)
+                    return false;
+            }
+            return true;
+        }
+
+        #region - object interaction
+        private void OnMouseOver()
+        {
+            if (!IsInteractable())
+                return;
+
+            if (isSelected)
+                return;
+
+            if (towerRenderer)
+                towerRenderer.material = hoveredTowerMat;
+        }
+
+        private void OnMouseExit()
+        {
+            if (!IsInteractable())
+                return;
+
+            if (towerRenderer)
+                towerRenderer.material = currentTowerMat;
+        }
+
+        private void OnMouseDown()
+        {
+            if (!IsInteractable())
+                return;
+
+            if (GameController.Instance)
+            {
+                GameController.Instance.OnTowerPressed(this);
+            }
+        }
+        #endregion
+
     }
 
     public enum TowerType {

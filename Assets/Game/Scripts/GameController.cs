@@ -10,8 +10,11 @@ namespace gotoandplay
         public UnityEvent<int> evStartGame;
         [HideInInspector]
         public UnityEvent evLevelComplete;
+        [HideInInspector]
+        public UnityEvent evMoveAction;
 
         private GameView gameView;
+        private CameraController cameraController;
 
         public TowerController focusedTower;
         public TowerController targetTower;
@@ -19,6 +22,8 @@ namespace gotoandplay
         public TowerController goalTower;               // our winning tower
 
         private int currentGameDiskCount = 0;
+
+        private GameState gameState = GameState.LOBBY;
 
         private void Awake()
         {
@@ -35,10 +40,12 @@ namespace gotoandplay
         void Init()
         {
             gameView = FindObjectOfType<GameView>();
+            cameraController = FindObjectOfType<CameraController>();
         }
 
         public void StartGame(int diskCount)
         {
+            gameState = GameState.IN_GAME;
             currentGameDiskCount = diskCount;
             evStartGame.Invoke(diskCount);
         }
@@ -54,6 +61,13 @@ namespace gotoandplay
             }
         }
 
+        /// <summary>
+        /// This is the main game logic.
+        /// This component will check if the disk transfered to it is allowed
+        /// so all we need to do it check if the index is lower than the top disk
+        /// of the target tower.
+        /// </summary>
+        /// <param name="value"></param>
         public void OnTowerPressed(TowerController value)
         {
             if(focusedTower == null)
@@ -89,6 +103,12 @@ namespace gotoandplay
                         CheckGameComplete();
 
                         // TODO - you can add move count here, and other actions relating to moving the disk to another spot.
+                        evMoveAction.Invoke();
+                    } 
+                    else
+                    {
+                        if (cameraController)
+                            cameraController.Shake();
                     }
                 }
 
@@ -123,10 +143,33 @@ namespace gotoandplay
                 // check for level complete condition
                 if (goalTower.disks.Count == currentGameDiskCount)
                 {
+                    gameState = GameState.COMPLETE;
+
+                    var countView = FindObjectOfType<MoveCountView>();
+                    var timerView = FindObjectOfType<TimerView>();
+
+                    if(countView && timerView && gameView)
+                        gameView.SetLevelCompleteSummaryValues(countView.MoveCount + 1, timerView.CurrentTimerValue);
+
                     Debug.Log("We win!");
                     evLevelComplete.Invoke();
                 }
             }
         }
+
+        #region - controller getter/setters
+        public GameState GetGameState()
+        {
+            return gameState;
+        }
+
+        #endregion
+    }
+
+    public enum GameState
+    {
+        LOBBY,
+        IN_GAME,
+        COMPLETE
     }
 }

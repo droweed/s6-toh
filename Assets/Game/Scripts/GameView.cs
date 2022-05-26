@@ -16,6 +16,9 @@ namespace gotoandplay
         public GameObject uiGameHud;
         public GameObject uiLevelComplete;
 
+        public TextMeshProUGUI levelCompleteDurationLabel;
+        public TextMeshProUGUI levelCompleteMoveCountLabel;
+
         private void Start()
         {
             SubscribeEvents();
@@ -37,6 +40,13 @@ namespace gotoandplay
             diskCountSliderLabel.text = value + "";
         }
 
+        public void SetLevelCompleteSummaryValues(int moveCount, float gameDuration)
+        {
+            levelCompleteDurationLabel.text = gameDuration.ToString("0.00");
+            levelCompleteMoveCountLabel.text = moveCount + "";
+        }
+
+        #region - event register/unregister methods
         void SubscribeEvents()
         {
             if (GameController.Instance)
@@ -48,6 +58,7 @@ namespace gotoandplay
             if (GameController.Instance)
                 GameController.Instance.evLevelComplete.RemoveListener(LevelCompleteHandler);
         }
+        #endregion
 
         private void LevelCompleteHandler()
         {
